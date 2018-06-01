@@ -2,7 +2,7 @@
 # Install git
 #
 
-sudo apt install git
+sudo apt install git -y
 
 #
 # Clone cathook
