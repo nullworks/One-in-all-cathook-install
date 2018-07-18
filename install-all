@@ -2,7 +2,11 @@
 # Install git
 #
 
+if [ -f "/etc/arch-release" ]; then
+sudo pacman -S --needed --noconfirm git
+else
 sudo apt install git -y
+fi
 
 #
 # Clone cathook
