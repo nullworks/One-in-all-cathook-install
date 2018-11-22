@@ -2,7 +2,7 @@
 # Install git
 #
 
-if [ -f "/etc/arch-release" ]; then
+if [ -x "$(command -v pacman)" ]; then
 sudo pacman -S --needed --noconfirm git
 else
 sudo apt install git -y
