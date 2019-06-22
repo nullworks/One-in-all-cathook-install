@@ -12,10 +12,12 @@ fi
 # Clone cathook
 #
 
-git clone --depth 1 --shallow-submodules --recurse-submodules https://github.com/nullworks/cathook.git;cd cathook
+git clone --depth 1 --shallow-submodules --recurse-submodules https://github.com/nullworks/cathook.git
 
 #
 # Run cathook's install all script
 #
 
-./install-all
+pushd cathook
+. ./install-all
+popd
