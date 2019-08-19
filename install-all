@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+RUNUSER="sudo -u $(logname)"
+
 #
 # Install git
 #
@@ -14,7 +16,7 @@ fi
 # Clone cathook
 #
 
-git clone --depth 1 https://github.com/nullworks/cathook.git
+$RUNUSER git clone --depth 1 https://github.com/nullworks/cathook.git
 
 #
 # Run cathook's install all script
