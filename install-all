@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-RUNUSER="sudo -u $(logname)"
+RUNUSER="sudo -u $LOGNAME"
 
 #
 # Install git
