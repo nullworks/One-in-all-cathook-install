@@ -1,22 +1,22 @@
 #!/usr/bin/env bash
 
-RUNUSER="sudo -u $LOGNAME"
-
 #
 # Install git
 #
 
-if [ -x "$(command -v pacman)" ]; then
-sudo pacman -S --needed --noconfirm git
-elif [ -x "$(command -v apt)" ]; then
-sudo apt install git -y
+SUDO=${CH_SUDO:-sudo}
+
+if [ -x "$(command -v pacman)" ] && [ ! -x "$(command -v git)" ]; then
+  $SUDO pacman -S --needed --noconfirm git
+elif [ -x "$(command -v apt)" ] && [ ! -x "$(command -v git)" ]; then
+  $SUDO apt install git -y
 fi
 
 #
 # Clone cathook
 #
 
-$RUNUSER git clone --depth 1 https://github.com/nullworks/cathook.git
+git clone --depth 1 https://github.com/nullworks/cathook.git
 
 #
 # Run cathook's install all script
