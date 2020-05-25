@@ -1,22 +1,20 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 #
 # Install git
 #
 
-printf "Escalated privileges are required, type in either 'doas' or 'sudo' to continue.\nSelection: "
+printf "Escalated privileges are required, type in either 'doas' or 'sudo' to continue.\nNote: doas must be compiled with 'persist' capability inorder to function correctly, as its not built into the other scripts ran.\nSelection: "
 
 while opt=$(line)
   do
     case $opt in
       "doas" )
-        ESCALATE=${CH_SUDO:-doas}
-        export ESCALATE
+        SUDO=${CH_SUDO:-doas}
         break
       ;;
       "sudo" )
-        ESCALATE=${CH_SUDO:-sudo}
-        export ESCALATE
+        SUDO=${CH_SUDO:-sudo}
         break
       ;;
       *)
@@ -27,13 +25,13 @@ done
 
 #TODO: Laziness; using a switch case would improve script performance.
 if [ -x "$(command -v emerge)" ] && [ ! -x "$(command -v git)" ]; then
-  $ESCALATE emerge -U dev-vcs/git
+  $SUDO emerge -U dev-vcs/git
 elif [ -x "$(command -v pacman)" ] && [ ! -x "$(command -v git)" ]; then
-  $ESCALATE pacman -S --needed --noconfirm git
+  $SUDO pacman -S --needed --noconfirm git
 elif [ -x "$(command -v apt)" ] && [ ! -x "$(command -v git)" ]; then
-  $ESCALATE apt install git -y
+  $SUDO apt install git -y
 elif [ -x "$(command -v dnf)" ] && [ ! -x "$(command -v git)" ]; then
-  $ESCALATE dnf install -y git
+  $SUDO dnf install -y git
 fi
 
 #
@@ -46,12 +44,6 @@ git clone --depth 1 https://github.com/nullworks/cathook.git
 # Run cathook's install all script
 #
 
-if [ -d "${PWD}/cathook" ]
-  then
-    cd "${PWD}/cathook" || exit
-    bash ./install-all
-  else
-    mkdir -p "${PWD}/cathook"
-    cd "${PWD}/cathook" || exit
-    bash ./install-all
-fi
+pushd cathook || exit
+bash ./install-all
+popd || exit
