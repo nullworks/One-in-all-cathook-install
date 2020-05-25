@@ -11,10 +11,12 @@ while opt=$(line)
     case $opt in
       "doas" )
         ESCALATE=${CH_SUDO:-doas}
+        export ESCALATE
         break
       ;;
       "sudo" )
         ESCALATE=${CH_SUDO:-sudo}
+        export ESCALATE
         break
       ;;
       *)
