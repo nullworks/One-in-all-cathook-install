@@ -10,13 +10,11 @@ while opt=$(line)
   do
     case $opt in
       "doas" )
-        ESCALATE=doas
-        export ESCALATE
+        ESCALATE=${CH_SUDO:-doas}
         break
       ;;
       "sudo" )
-        ESCALATE=sudo
-        export ESCALATE
+        ESCALATE=${CH_SUDO:-sudo}
         break
       ;;
       *)
@@ -25,17 +23,16 @@ while opt=$(line)
   esac
 done
 
-case "$DISTRO" in
-  "-x $(command -v emerge) && ! -x $(command -v git)")
-    $ESCALATE emerge dev-vcs/git
-  ;;
-  "-x $(command -v pacman) && ! -x $(command -v git)")
-    $ESCALATE pacman -S --needed --noconfirm git
-  ;;
-  "-x $(command -v apt) && ! -x $(command -v git)")
-    $ESCALATE apt install git -y
-  ;;
-esac
+#TODO: Laziness; using a switch case would improve script performance.
+if [ -x "$(command -v emerge)" ] && [ ! -x "$(command -v git)" ]; then
+  $ESCALATE emerge -U dev-vcs/git
+elif [ -x "$(command -v pacman)" ] && [ ! -x "$(command -v git)" ]; then
+  $ESCALATE pacman -S --needed --noconfirm git
+elif [ -x "$(command -v apt)" ] && [ ! -x "$(command -v git)" ]; then
+  $ESCALATE apt install git -y
+elif [ -x "$(command -v dnf)" ] && [ ! -x "$(command -v git)" ]; then
+  $ESCALATE dnf install -y git
+fi
 
 #
 # Clone cathook
@@ -50,9 +47,9 @@ git clone --depth 1 https://github.com/nullworks/cathook.git
 if [ -d "${PWD}/cathook" ]
   then
     cd "${PWD}/cathook" || exit
-    sh ./install-all
+    bash ./install-all
   else
     mkdir -p "${PWD}/cathook"
     cd "${PWD}/cathook" || exit
-    sh ./install-all
+    bash ./install-all
 fi
