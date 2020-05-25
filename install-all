@@ -1,16 +1,41 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 #
 # Install git
 #
 
-SUDO=${CH_SUDO:-sudo}
+printf "Escalated privileges are required, type in either 'doas' or 'sudo' to continue.\nSelection: "
 
-if [ -x "$(command -v pacman)" ] && [ ! -x "$(command -v git)" ]; then
-  $SUDO pacman -S --needed --noconfirm git
-elif [ -x "$(command -v apt)" ] && [ ! -x "$(command -v git)" ]; then
-  $SUDO apt install git -y
-fi
+while opt=$(line)
+  do
+    case $opt in
+      "doas" )
+        ESCALATE=doas
+        export ESCALATE
+        break
+      ;;
+      "sudo" )
+        ESCALATE=sudo
+        export ESCALATE
+        break
+      ;;
+      *)
+        echo "'$REPLY' is an invalid option!"
+      ;;
+  esac
+done
+
+case "$DISTRO" in
+  "-x $(command -v emerge) && ! -x $(command -v git)")
+    $ESCALATE emerge dev-vcs/git
+  ;;
+  "-x $(command -v pacman) && ! -x $(command -v git)")
+    $ESCALATE pacman -S --needed --noconfirm git
+  ;;
+  "-x $(command -v apt) && ! -x $(command -v git)")
+    $ESCALATE apt install git -y
+  ;;
+esac
 
 #
 # Clone cathook
@@ -22,6 +47,12 @@ git clone --depth 1 https://github.com/nullworks/cathook.git
 # Run cathook's install all script
 #
 
-pushd cathook
-bash ./install-all
-popd
+if [ -d "${PWD}/cathook" ]
+  then
+    cd "${PWD}/cathook" || exit
+    sh ./install-all
+  else
+    mkdir -p "${PWD}/cathook"
+    cd "${PWD}/cathook" || exit
+    sh ./install-all
+fi
