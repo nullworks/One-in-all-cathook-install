@@ -16,7 +16,7 @@ fi
 # Clone cathook
 #
 
-git clone --depth 1 https://gitlab.com/nullworks/cathook/cathook
+git clone --depth 1 https://repo.cathook.club cathook
 
 #
 # Run cathook's install all script
